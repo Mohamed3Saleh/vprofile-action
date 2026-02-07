@@ -86,8 +86,13 @@ jobs:
             - name: Update kubeconfig for EKS cluster
               run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
 
-            - name: log in to ECR
-              run: kubectl create secret docker-registry regcred --docker-server=${{ secrets.REGISTRY }} --docker-username=AWS  --docker-password=$(aws ecr get-login-password)
+            - name: Create/Update regcred
+              run: |
+                kubectl create secret docker-registry regcred \
+                --docker-server=${{ secrets.REGISTRY }} \
+                --docker-username=AWS \
+                --docker-password=$(aws ecr get-login-password --region ${{ env.AWS_REGION }}) \
+                --dry-run=client -o yaml | kubectl apply -f -
 
 
             - name: Deploy Helm
