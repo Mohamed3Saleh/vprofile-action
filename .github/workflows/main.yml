@@ -89,11 +89,7 @@ jobs:
             - name: log in to ECR
               run: kubectl create secret docker-registry regcred --docker-server=${{ secrets.REGISTRY }} --docker-username=AWS  --docker-password=$(aws ecr get-login-password)
 
-            - name: Deploy to EKS using kubectl
-              run: |
-                kubectl apply -f k8s/vproappdep.yaml
-                kubectl apply -f k8s/vproingress.yaml
-            
+
             - name: Deploy Helm
               uses: bitovi/github-actions-deploy-eks-helm@v1.2.8
               with:
